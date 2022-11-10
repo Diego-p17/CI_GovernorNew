@@ -388,7 +388,7 @@ def getAllOrganizations(request):
                      "citys"        : citys,
                      "countries"    : countries
                     }
-    return render(request, 'layouts/organization/organization.html', context)
+    return render(request, 'layouts/organization/organizations.html', context)
 
 #show all data the organization
 def getOrganization(request, idOrg):
@@ -550,7 +550,7 @@ def getAllSites(request):
                      'citys'         :citys,
                      'countries'     :countries
                      }
-    return render(request, 'sites/sites.html', context)
+    return render(request, 'layouts/site/sites.html', context)
 
 # show all data the site
 def getSite(request, id_Site):
@@ -674,7 +674,7 @@ def getPeoples(request):
     peoples       = models.TbPeople.objects.all()
     organizations = models.TbOrganization.objects.all()
     context = {'peoples':peoples, 'organizations':organizations}
-    return render(request, 'peoples/peoples.html', context)
+    return render(request, 'layouts/people/peoples.html', context)
 
 # show data people information
 def peopleInfo(request, id_People):
