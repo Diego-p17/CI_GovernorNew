@@ -1,0 +1,10 @@
+:root {
+    --bg-color: #D6D6D6;
+    --primary-color: #FFD100;
+    --secondary-color: #202020;
+  }
+
+
+body{
+    background-color: var(--bg-color);
+}

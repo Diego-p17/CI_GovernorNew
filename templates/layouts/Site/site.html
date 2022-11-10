@@ -1,0 +1,87 @@
+{% extends '../base.html'%}
+{% block tittle %}Sitios{% endblock %}
+{% block subtitle %}Sitios{% endblock %}
+{% block container %}
+    {% block table %}
+    <div class="table-responsive">
+        <table id="dataTable" class="dataTable table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Pais</th>
+                    <th>Ciudad</th>
+                    <th>Dirección</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in sites  %}
+                <tr>
+                  <td>{{ site.id_Site     }}</td>
+                  <td>{{ site.nameSite    }}</td>
+                  <td>{{ site.id_Country  }}</td>
+                  <td>{{ site.id_City     }}</td>
+                  <td>{{ site.addressSite }}</td>
+                  <td class="text-center">
+                    <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                    <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                  </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}
+    <!-- Add Site -->
+    <!-- Button Modal -->
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSiteModal">
+        Agregar
+    </button>
+
+    <!-- Modal  -->
+    <div class="modal fade" id="addSiteModal" aria-labelledby="addSiteModal" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Sitio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body mx-auto">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="form-outline mb-4">
+                                <input type="text" name = "nameSite" class="form-control" placeholder=" Nombre Sitio" required>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" name = "addressSite class="form-control" placeholder="Direccion" required>
+                            </div>
+                            <div class="row">
+                                <div class="col form-outline mb-4">
+                                    <select name="countryOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                        <option hidden selected>Pais</option>
+                                        {% for country in countries %}
+                                        <option value="{{country.id_Country}}">{{country.nameCountry}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col form-outline mb-4">
+                                    <select name="cityOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                        <option hidden selected>Ciudad</option>
+                                        {% for city in citys %}
+                                        <option value="{{city.id_City}}">{{city.nameCity}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary ">Agregar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
