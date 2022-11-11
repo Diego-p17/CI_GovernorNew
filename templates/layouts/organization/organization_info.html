@@ -1,0 +1,233 @@
+{% extends '../base.html'%}
+{% block tittle %}Organizacion{% endblock %}
+{% block subtitle %}{{organization.nameOrganization}}{% endblock %}
+{% block container %}
+  <!-- HEAD TABS -->
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Información</button>
+      <button class="nav-link" id="nav-people-tab" data-bs-toggle="tab" data-bs-target="#nav-people" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Personas</button>
+      <button class="nav-link" id="nav-sites-tab" data-bs-toggle="tab" data-bs-target="#nav-sites" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Sitios</button>
+      <button class="nav-link" id="nav-devices-tab" data-bs-toggle="tab" data-bs-target="#nav-devices" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Dispositivos</button>
+    </div>
+  </nav>
+  <!-- TABS Content -->
+  <div class="tab-content" id="nav-tabContent">
+    <!-- TAB Informacion -->
+    <div class="tab-pane fade show active container_sm shadow p-4 bg-body rounded" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+      <div class="card-body mx-auto mb-3" style="max-width: 600px;">
+          <h4 class="text-center p-3">Información basica de la Organización </h4>
+            <form action="{% url 'updateOrganization' idOrganization %}" method="POST" >
+              {% csrf_token %}
+              <div class="form-outline mb-4">
+                <input  type="text" name = "nameOrg" class="form-control" placeholder="Nombre Organizacion" value="{{organization.nameOrganization}}">
+              </div>
+              <div class="form-outline mb-4">
+                <div class="form-outline">
+                  <input type="text" name = "taxId" class="form-control" placeholder="Tax ID" value="{{organization.taxIdOrganization}}">
+                </div>
+              </div>
+              <div class="form-outline mb-4">
+                <input type="text" name = "adressOrg" class="form-control" placeholder="Direccion" value="{{organization.addressOrganization}}">
+              </div>
+              <div class="row mb4">
+                <div class="col form-outline mb-4">
+                    <select name="countryOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                        {% for country in countries %}
+                          {% if country.id_Country == organization.id_Country %}
+                            <option selected value="{{country.id_Country}}">{{country.nameCountry}}</option>
+                          {% else %}
+                            <option value="{{country.id_Country}}">{{country.nameCountry}}</option>
+                          {% endif%}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col form-outline mb-4">
+                    <select name="cityOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                        {% for city in citys %}
+                          {% if city.id_City == organization.id_City %}
+                            <option selected value="{{city.id_City}}">{{city.nameCity}}</option>
+                          {% else %}
+                            <option value="{{city.id_City}}">{{city.nameCity}}</option>
+                          {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+              <button class="btn btn-primary">Actualizar</button>
+            </form>
+      </div>
+    </div>
+
+
+    <!-- TAB Personas -->
+    <div class="tab-pane fade container_sm shadow p-4 bg-body rounded" id="nav-people" role="tabpanel" aria-labelledby="nav-people-tab">
+        <!-- Table -->
+        <div class="table-responsive">
+          <table id="dataTable" class="dataTable table table-striped">
+            <thead class="table-dark text-center">
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Telefono</th>
+                <th class="text-center">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for peopleOrg in peoplesOrg %}
+                <tr>
+                  <td>{{ peopleOrg.namePeople }}</td>
+                  <td>{{ peopleOrg.emailPeople }}</td>
+                  <td>{{ peopleOrg.phonePeople}}</td>
+                  <td class="text-center">
+                    <a href="{% url 'people' peopleOrg.id_People %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                    <a href="{% url 'deletePeopleOrg' peopleOrg.id_People %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddPeople">
+          Agregar
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalAddPeople" tabindex="-1" aria-labelledby="modalAddPeople" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalAddPeople">Agregar Persona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <h3>Personas:</h3>
+                {% if peoples|length == 0  %}
+                  <p>No hay personas para AGREGAR</p>
+                {% else %}
+                  <form action="{% url 'addPeopleOrg' idOrganization %}" method="POST">
+                    {% csrf_token %}
+                    <select class="form-select" name="people" aria-label="Organización">
+                      {% for people in peoples %}
+                        <option value="{{people.id_People}}">{{people.namePeople}}</option>
+                      {% endfor %}
+                    </select>
+                    <button class="btn btn-primary mt-5">Agregar</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!---->
+
+    <!-- TAB Sitios -->
+    <div class="tab-pane fade container_sm shadow p-4 bg-body rounded" id="nav-sites" role="tabpanel" aria-labelledby="nav-sites-tab">
+        <!-- Table -->
+      <div class="table-responsive">
+        <table id="dataTable" class="dataTable table table-striped mt-3">
+          <thead class="table-dark text-center">
+            <tr>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>Pais</th>
+              <th>Ciudad</th>
+              <th>Dirección</th>
+              <th class="text-center">Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for siteOrg in sitesOrg %}
+              <tr class="text-center">
+                <td>{{siteOrg.id_Site}}</td>
+                <td>{{siteOrg.nameSite}}</td>
+                <td>{{siteOrg.id_Country}}</td>
+                <td>{{siteOrg.id_City}}</td>
+                <td>{{siteOrg.addressSite}}</td>
+                <td>
+                  <a href="{% url 'site' siteOrg.id_Site %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                  <a href="{% url 'deleteSiteOrg' siteOrg.id_Site %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddSite">
+        Agregar
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="modalAddSite" tabindex="-1" aria-labelledby="modalAddSite" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalAddSite">Agregar Sitio</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h3>Sitios:</h3>
+              {% if sites|length == 0  %}
+                <p>No hay Sitios para AGREGAR</p>
+              {% else %}
+                <form action="{% url 'addSiteOrg' idOrganization%}" method="POST">
+                  {% csrf_token %}
+                  <select class="form-select" name="site" aria-label="Organización">
+                    {% for site in sites %}
+                      <option value="{{site.id_Site}}">{{site.nameSite}}</option>
+                    {% endfor %}
+                  </select>
+                  <button class="btn btn-primary mt-5">Agregar</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!---->
+
+    <!-- TAB Dispositivos -->
+    <div class="tab-pane fade" id="nav-devices" role="tabpanel" aria-labelledby="nav-devices-tab">
+      <div class="container_sm shadow p-5 mb-5 bg-body rounded">
+        <!-- Table -->
+        <div class="table-responsive">
+          <table id="dataTable" class="dataTable table table-striped table-hover mt-3">
+            <thead class="table-dark text-center">
+              <tr>
+                <th>Id</th>
+                <th>Ip</th>
+                <th>Procesador</th>
+                <th>Sistema Operativo</th>
+                <th>Tipo de Equipo</th>
+                <th>Fecha de instalacion</th>
+                <th class="text-center">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key,value in devices.items %}
+                {% for val in value %}
+                  <tr>
+                    <td>{{val.id_device}}</td>
+                    <td>{{val.ip_from}}</td>
+                    <td>{{val.id_cpu.cpu_name}}</td>
+                    <td>{{val.id_os.os_name}}</td>
+                    <td>{{val.id_device_type.type_name}}</td>
+                    <td>{{val.date_created}}</td>
+                    <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!---->
+  </div>
+{% endblock %}
+

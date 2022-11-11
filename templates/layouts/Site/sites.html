@@ -24,7 +24,7 @@
                   <td>{{ site.id_City     }}</td>
                   <td>{{ site.addressSite }}</td>
                   <td class="text-center">
-                    <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                    <a href="{% url 'site' site.id_Site %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
                     <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
                   </td>
                 </tr>
@@ -49,17 +49,17 @@
                 </div>
                 <div class="modal-body">
                     <div class="card-body mx-auto">
-                        <form action="" method="POST">
+                        <form action="{% url 'addSite'%}" method="POST">
                             {% csrf_token %}
                             <div class="form-outline mb-4">
                                 <input type="text" name = "nameSite" class="form-control" placeholder=" Nombre Sitio" required>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="text" name = "addressSite class="form-control" placeholder="Direccion" required>
+                                <input type="text" name = "addressSite" class="form-control" placeholder="Direccion" required>
                             </div>
                             <div class="row">
                                 <div class="col form-outline mb-4">
-                                    <select name="countryOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <select name="countrySite" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
                                         <option hidden selected>Pais</option>
                                         {% for country in countries %}
                                         <option value="{{country.id_Country}}">{{country.nameCountry}}</option>
@@ -67,13 +67,21 @@
                                     </select>
                                 </div>
                                 <div class="col form-outline mb-4">
-                                    <select name="cityOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <select name="citySite" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
                                         <option hidden selected>Ciudad</option>
                                         {% for city in citys %}
                                         <option value="{{city.id_City}}">{{city.nameCity}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <select name="organization" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <option hidden selected>Organizacion</option>
+                                    {% for organization in organizations %}
+                                    <option value="{{organization.id_Organization}}">{{organization.nameOrganization}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div>
                                 <button class="btn btn-primary ">Agregar</button>

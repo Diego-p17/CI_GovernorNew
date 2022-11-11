@@ -37,17 +37,17 @@ urlpatterns = [
     # Organizations #
     #################
     path('', views.getAllOrganizations, name= "home"),
-    path('organization/<int:idOrg>/', views.getOrganization, name = "organization"),
-    path('addOrganization/', views.addOrganization, name = "add_organization"),
+    path('organization/<int:id_Organization>/', views.getOrganization, name = "organization"),
+    path('addOrganization/', views.addOrganization, name = "addOrganization"),
     path('deleteOrganization/<int:id_Organization>', views.deleteOrganization, name = "deleteOrganization"),
-    path('update_organization/<int:id_Organization>', views.update_organization, name = "update_organization"),
+    path('updateOrganization/<int:id_Organization>', views.updateOrganization, name = "updateOrganization"),
 
     #PeopleORG
-    path('add_peopleOrg/<int:idOrg>/', views.add_peopleOrg, name = "add_peopleOrg"),
-    path('delete_peopleOrg/<int:idPeople>/<int:idOrganization>/', views.delete_peopleOrg, name="delete_peopleOrg"),
+    path('addPeopleOrg/<int:id_Organization>', views.addPeopleOrg, name = "addPeopleOrg"),
+    path('deletePeopleOrg/<int:id_People>', views.deletePeopleOrg, name="deletePeopleOrg"),
     #SitesOrg
-    path('add_siteOrg/<int:idOrg>/', views.add_siteOrg, name = "add_siteOrg"),
-    path('delete_orgSite/<int:idSite>', views.delete_orgSite, name = "delete_orgSite"),
+    path('addSiteOrg/<int:id_Organization>', views.addSiteOrg, name = "addSiteOrg"),
+    path('deleteSiteOrg/<int:id_Site>', views.deleteSiteOrg, name = "deleteSiteOrg"),
 
     ###########
     #  Sites  #
@@ -58,15 +58,15 @@ urlpatterns = [
     path('addSite/', views.addSite, name = "addSite"),
     path('updatesite/<int:id_Site>', views.updateSite, name = "updateSite"),
     #zoneSite
-    path('add_zone/<int:idSite>/', views.add_zone, name = "add_zone"),
-    path('update_zone/<int:idZone>/', views.update_zone, name = "update_zone"),
-    path('delete_zone/<int:idZone>/', views.delete_zone, name = "delete_zone"),
+    path('addZone/<int:id_Site>/', views.addZone, name = "addZone"),
+    path('updateZone/<int:id_Zone>/', views.updateZone, name = "updateZone"),
+    path('deleteZone/<int:id_Zone>/', views.deleteZone, name = "deleteZone"),
 
     #############
     #  Peoples  #
     #############
     path('peoples/', views.getPeoples, name = "peoples"),
-    path('peopleInfo/<int:id_People>', views.peopleInfo, name = "peopleInfo"),
+    path('people/<int:id_People>', views.peopleInfo, name = "people"),
     path('addPeople/', views.addPeople, name = "addPeople"),
     path('updatePeople/<int:id_People>/', views.updatePeople, name = "updatePeople"),
     path('deletePeople/<int:id_People>/', views.deletePeople, name = "deletePeople"),

@@ -30,7 +30,7 @@ def get_general(request):
         'settingsTypes' : tbSettingsType
     }
 
-    return render(request, 'general.html', context)
+    return render(request, 'layouts/general/general.html', context)
 
 #--country
 def addCountry(request):
@@ -391,17 +391,18 @@ def getAllOrganizations(request):
     return render(request, 'layouts/organization/organizations.html', context)
 
 #show all data the organization
-def getOrganization(request, idOrg):
+def getOrganization(request, id_Organization):
+    # General Tables
+    countries = models.TbCountry.objects.all()
+    citys     = models.TbCity.objects.all()
 
-    organization   = models.TbOrganization.objects.filter(id_Organization = idOrg)
-    idOrganization = organization[0]['id_Organization']
-    peoplesOrg     = models.TbPeople.objects.filter(id_Organization = idOrg)
-    sitesOrg       = models.TbSite.objects.filter(id_Organization = idOrg)
-
-
+    organization   = models.TbOrganization.objects.get(id_Organization = id_Organization)
+    peoplesOrg     = models.TbPeople.objects.filter(id_Organization = id_Organization)
+    sitesOrg       = models.TbSite.objects.filter(id_Organization = id_Organization)
+    idOrganization = organization.id_Organization
     #verify people with  emptyOrganization
-    emptyOrg     = models.TbOrganization.objects.filter(nameOrganization = 'sin organizacion').values('id_Organization')
-    idEmptyOrg   = emptyOrg[0]['id_Organization']
+    emptyOrg     = models.TbOrganization.objects.get(nameOrganization = 'sin organizacion')
+    idEmptyOrg   = emptyOrg.id_Organization
     peoples      = models.TbPeople.objects.filter(id_Organization = idEmptyOrg).values('id_People','namePeople','id_Organization')
     sites        = models.TbSite.objects.filter(id_Organization = idEmptyOrg).values('id_Site', 'nameSite','id_Organization')
 
@@ -418,43 +419,48 @@ def getOrganization(request, idOrg):
 
     context = {
                "idOrganization": idOrganization,
-               "organization":   organization,
-               "peoplesOrg":     peoplesOrg,
-               "peoples":        peoples,
-               "sitesOrg":       sitesOrg,
-               "sites":          sites,
-               "devices":        devices,
+               "organization"  : organization,
+               "peoplesOrg"    : peoplesOrg,
+               "peoples"       : peoples,
+               "sitesOrg"      : sitesOrg,
+               "sites"         : sites,
+               "devices"       : devices,
+               "countries"     : countries,
+               "citys"         : citys
               }
 
-    return render(request, 'organizations/organization_info.html', context)
+    return render(request, 'layouts/organization/organization_info.html', context)
 
 # Add new Organization
 def addOrganization(request):
+    if request.method == 'POST':
+        nameOrg    = request.POST['nameOrg']
+        taxIdOrg   = request.POST['taxIdOrg']
+        countryOrg = request.POST['countryOrg']
+        cityOrg    = request.POST['cityOrg']
+        addressOrg = request.POST['addressOrg']
+        emailOrg   = request.POST['emailOrg']
 
-    nameOrg    = request.POST['nameOrg']
-    taxIdOrg   = request.POST['taxIdOrg']
-    countryOrg = request.POST['countryOrg']
-    cityOrg    = request.POST['cityOrg']
-    addressOrg = request.POST['addressOrg']
-    emailOrg   = request.POST['emailOrg']
+        country      = models.TbCountry.objects.get(id_Country= countryOrg)
+        city         = models.TbCity.objects.get(id_City= cityOrg)
+        organization = models.TbOrganization.objects.filter(nameOrganization = nameOrg)
 
-    country      = models.TbCountry.objects.get(id_Country= countryOrg)
-    city         = models.TbCity.objects.get(id_City= cityOrg)
-    organization = models.TbOrganization.objects.filter(nameOrganization = nameOrg)
-
-    if organization:
-        messages.warning(request, "La organizacion ya fue ingresada")
-        return redirect(to='home')
+        if organization:
+            messages.warning(request, "La organizacion ya fue ingresada")
+            return redirect(to='home')
+        else:
+            #instance new organization
+            new_organization = models.TbOrganization(nameOrganization = nameOrg, taxIdOrganization = taxIdOrg, id_Country = country, id_City = city, addressOrganization = addressOrg, contactEmailOrganization = emailOrg)
+            new_organization.save()
+            messages.success(request, "Organizacion ingresada exitosamente")
+            return redirect(to='home')
     else:
-        #instance new organization
-        new_organization = models.TbOrganization(nameOrganization = nameOrg, taxIdOrganization = taxIdOrg, id_Country = country, id_City = city, addressOrganization = addressOrg, contactEmailOrganization = emailOrg)
-        new_organization.save()
-        messages.success(request, "Organizacion ingresada exitosamente")
         return redirect(to='home')
+
 
 # Delete organization --------------------------------------------------------------------------------------
-def deleteOrganization(request, idOrg):
-    organization = models.TbOrganization.objects.get( id_Organization = idOrg)
+def deleteOrganization(request, id_Organization):
+    organization = models.TbOrganization.objects.get( id_Organization = id_Organization)
 
     if organization:
         messages.success(request, "Organización eliminada exitosamente")
@@ -465,72 +471,114 @@ def deleteOrganization(request, idOrg):
         return redirect(to='home')
 
 #Update Data Organization
-def update_organization(request, idOrg):
+def updateOrganization(request, id_Organization):
 
-    organization = models.Organizations.objects.get( idOrganization = idOrg)
+    if request.method == 'POST':
 
-    nameOrganization = request.POST['nameOrg']
-    taxId            = request.POST['taxId']
-    postal           = request.POST['postalOrg']
-    address          = request.POST['adressOrg']
-    city             = request.POST['cityOrg']
-    country          = request.POST['countryOrg']
+        nameOrganization = request.POST['nameOrg']
+        taxId            = request.POST['taxId']
+        address          = request.POST['adressOrg']
+        city             = request.POST['cityOrg']
+        country          = request.POST['countryOrg']
 
-    organization.nameOrganization    = nameOrganization
-    organization.taxIdOrganization   = taxId
-    organization.postalOrganization  = postal
-    organization.addressOrganization = address
-    organization.cityOrganization    = city
-    organization.countryOrganization = country
+        organization      = models.TbOrganization.objects.get( id_Organization = id_Organization)
+        organizationCheck = models.TbOrganization.objects.filter( nameOrganization = nameOrganization).exclude( id_Organization = id_Organization)
 
-    organization.save()
+        if organization.nameOrganization == nameOrganization and organization.taxIdOrganization == taxId and organization.addressOrganization == address and organization.id_Country.id_Country == int(country) and organization.id_City.id_City == int(city):
+            messages.warning(request, "No se ha modificado ningun valor")
+            return redirect( 'organization' , id_Organization )
+        elif  organizationCheck:
+            messages.warning(request, "Ya existe una organizacion con el mismo nombre")
+            return redirect( 'organization' , id_Organization )
+        else:
+            country      = models.TbCountry.objects.get( id_Country= int(country) )
+            city         = models.TbCity.objects.get( id_City= int(city) )
 
-    return redirect('organization', idOrg)
+            organization.nameOrganization    = nameOrganization
+            organization.taxIdOrganization   = taxId
+            organization.addressOrganization = address
+            organization.id_City             = city
+            organization.id_Country          = country
+
+            organization.save()
+
+            messages.success(request, "La Organizacion fue actualizada con exito")
+            return redirect( 'organization' , id_Organization )
 
 #Add people at the  organization
-def add_peopleOrg(request, idOrg):
+def addPeopleOrg(request, id_Organization):
+    if request.method == 'POST':
 
-    idPeople     = request.POST['people']
-    organization = models.Organizations.objects.get(idOrganization = idOrg)
-    people       = models.Peoples.objects.get(idPeople = idPeople)
+        id_People     = request.POST['people']
+        organization  = models.TbOrganization.objects.get(id_Organization = id_Organization)
+        people        = models.TbPeople.objects.get(id_People = id_People)
 
-    people.organizations_idOrganization_id = organization
-    people.save()
+        people.id_Organization = organization
+        people.save()
+        messages.success(request, "Persona Agregada Exitosamente")
+        return redirect('organization', id_Organization)
+    else:
+        messages.error(request, "Ha Ocurrido Un error Inesperado")
+        return redirect('organization', id_Organization)
 
-    return redirect('organization', idOrg)
-
-#Add site at the organization
-def add_siteOrg(request, idOrg):
-
-
-    organization = models.Organizations.objects.get(idOrganization = idOrg)
-    idSite       = request.POST['site']
-    site         = models.Sites.objects.get(idSite = idSite)
-    site.organizations_idOrganization_id = organization
-    site.save()
-
-    return redirect('organization', idOrg)
-
-# Delete Site the organization
-def delete_orgSite(request, idSite):
-    empty_organization = models.Organizations.objects.get(nameOrganization = 'sin organizacion')
-    site = models.Sites.objects.get(idSite = idSite)
-    idOrganization = site.organizations_idOrganization_id
-    print(idOrganization)
-    site.organizations_idOrganization_id = empty_organization
-    site.save()
-
-    return redirect('organization', idOrganization)
 
 #Delete People at the organization
-def delete_peopleOrg(request, idPeople , idOrganization):
-    empty_organization = models.Organizations.objects.get(nameOrganization = 'sin organizacion')
-    people             = models.Peoples.objects.get(idPeople = idPeople)
-    idOrganization     = people.organizations_idOrganization_id
-    people.organizations_idOrganization = empty_organization
-    people.save()
+def deletePeopleOrg(request, id_People):
 
-    return redirect('organization', idOrganization)
+    emptyOrganization = models.TbOrganization.objects.get(nameOrganization = 'sin organizacion')
+    people            = models.TbPeople.objects.get(id_People = id_People)
+    idOrganization    = people.id_Organization.id_Organization
+
+    if  emptyOrganization:
+        if people:
+            people.id_Organization = emptyOrganization
+            people.save()
+            messages.success(request, "La persona fue retirada de la organizacion")
+            return redirect('organization', idOrganization)
+        else:
+            messages.error(request, "Persona No encontrada")
+            return redirect('organization', idOrganization)
+    else:
+        messages.error(request, "Ha ocurrido un error al eliminar la persona")
+        return redirect('organization', idOrganization)
+
+#Add site at the organization
+def addSiteOrg(request, id_Organization):
+
+    if request.method == 'POST':
+
+        id_Site       = int(request.POST['site'])
+        organization  = models.TbOrganization.objects.get(id_Organization = id_Organization)
+        site          = models.TbSite.objects.get(id_Site = id_Site)
+
+        site.id_Organization = organization
+        site.save()
+        messages.success(request, "Sitio Agregado Exitosamente")
+        return redirect('organization', id_Organization)
+    else:
+        messages.error(request, "Ha Ocurrido Un error Inesperado")
+        return redirect('organization', id_Organization)
+
+# Delete Site the organization
+def deleteSiteOrg(request, id_Site):
+
+    emptyOrganization = models.TbOrganization.objects.get(nameOrganization = 'sin organizacion')
+    site              = models.TbSite.objects.get(id_Site = id_Site)
+    idOrganization    = site.id_Organization.id_Organization
+
+    if  emptyOrganization:
+        if site:
+            site.id_Organization = emptyOrganization
+            site.save()
+            messages.success(request, "El Sitio fue retirado de la organizacion")
+            return redirect('organization', idOrganization)
+        else:
+            messages.error(request, "Sitio No encontrado")
+            return redirect('organization', idOrganization)
+    else:
+        messages.error(request, "Ha ocurrido un error al eliminar el sitio")
+        return redirect('organization', idOrganization)
+
 
 
 
@@ -568,13 +616,13 @@ def getSite(request, id_Site):
                 "organizations" :organizations
               }
 
-    return render(request, 'sites/site_info.html', context)
+    return render(request, 'layouts/site/site_info.html', context)
 
 #add site
 def addSite(request):
     if request.method == 'POST':
 
-        nameSite        = request.POST['nameSite']
+        nameSite        = request.POST['nameSite'].capitalize()
         countrySite     = request.POST['countrySite']
         citySite        = request.POST['citySite']
         addressSite     = request.POST['addressSite']
@@ -597,11 +645,11 @@ def addSite(request):
 def updateSite(request, id_Site):
     if request.method == 'POST':
 
-        nameSite        = request.POST['nameSite']
+        nameSite        = request.POST['nameSite'].capitalize()
         countrySite     = request.POST['countrySite']
         citySite        = request.POST['citySite']
         addressSite     = request.POST['addressSite']
-        id_Organization = request.POST['id_Organization']
+        id_Organization = request.POST['organization']
 
         site       = models.TbSite.objects.get(id_Site =id_Site)
         siteCheck  = models.TbSite.objects.filter(nameSite = nameSite, id_Organization = id_Organization).exclude(id_Site=id_Site)
@@ -631,31 +679,66 @@ def updateSite(request, id_Site):
 
 
 #add zone the site
-def add_zone(request, idSite):
-    site     = models.Sites.objects.filter(idSite = idSite).values('idSite')
-    nameZone = request.POST['nameZone']
-    zone     = models.Zones(nameZone = nameZone, sites_idSite_id = site)
-    zone.save()
-    return redirect('site_info', idSite)
+def addZone(request, id_Site):
+
+    if request.method == 'POST':
+        nameZone = request.POST['nameZone'].capitalize()
+        zones    = models.TbZone.objects.filter(id_Site = id_Site)
+        site     = models.TbSite.objects.get(id_Site = id_Site)
+
+        zoneCheck = models.TbZone.objects.filter(id_Site = id_Site, nameZone = nameZone)
+
+        if zoneCheck:
+            messages.warning(request, "La zona Ingresada ya existe")
+            return redirect('site', id_Site)
+
+        else:
+
+            zone = models.TbZone(nameZone = nameZone, id_Site = site)
+            zone.save()
+
+            messages.success(request, "Zona Agregada exitosamente")
+            return redirect('site', id_Site)
+
+    else:
+        return redirect('site', id_Site)
 
 #update zone the site
-def update_zone(request, idZone):
-    zone     = models.Zones.objects.get(idZone = idZone)
-    nameZone = request.POST['nameZone']
-    idSite   = zone.sites_idSite_id
-    zone.nameZone = nameZone
+def updateZone(request, id_Zone):
+    if request.method == 'POST':
+        nameZone  = request.POST['nameZone']
+        zone      = models.TbZone.objects.get(id_Zone = id_Zone)
+        id_Site   = zone.id_Site.id_Site
+        zoneCheck = models.TbZone.objects.filter( nameZone = nameZone , id_Site = zone.id_Site)
 
-    zone.save()
+        if zoneCheck:
+            messages.warning(request, "La zona Ingresada ya existe")
+            return redirect('site', id_Site)
+        elif  nameZone == zone.nameZone:
+            messages.warning(request, "Ingrese un Dato Nuevo")
+            return redirect('site', id_Site)
 
-    return redirect('site_info', idSite)
+        else:
+            zone.nameZone = nameZone
+            zone.save()
+            messages.success(request, "Zona Actualizada")
+            return redirect('site', id_Site)
+
+    else:
+        return redirect('site', id_Site)
 
 #delete zone the site
-def delete_zone(request, idZone):
-    zone     = models.Zones.objects.get(idZone = idZone)
-    idSite   = zone.sites_idSite_id
-    zone.delete()
-
-    return redirect('site_info', idSite)
+def deleteZone(request, id_Zone):
+    try:
+        zone    = models.TbZone.objects.get(id_Zone = id_Zone)
+        id_Site = zone.id_Site.id_Site
+        if zone:
+            zone.delete()
+            messages.success(request, "Zona eliminada")
+            return redirect('site', id_Site)
+    except:
+        messages.success(request, "ha ocurrido un error ")
+        return redirect('sites')
 
 #view form add site
 def form_site(request):
@@ -688,7 +771,7 @@ def peopleInfo(request, id_People):
                "idOrganization" : idOrganization.id_Organization,
               }
 
-    return render(request, 'peoples/people_info.html', context)
+    return render(request, 'layouts/people/people_info.html', context)
 
 
 
@@ -698,7 +781,7 @@ def addPeople(request):
         namePeople      = request.POST['namePeople']
         emailPeople     = request.POST['emailPeople']
         phonePeople     = request.POST['phonePeople']
-        id_Organization = request.POST['id_Organization']
+        id_Organization = request.POST['organization']
 
         organization = models.TbOrganization.objects.get(id_Organization = id_Organization)
 

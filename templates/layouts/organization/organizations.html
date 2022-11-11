@@ -7,7 +7,7 @@
         <table id="dataTable" class="dataTable table table-striped">
             <thead class="table-dark">
                 <tr>
-                <th>Id</th>
+                <th>#</th>
                 <th>Nombre</th>
                 <th>Tax ID</th>
                 <th>Pais</th>
@@ -19,15 +19,15 @@
             <tbody>
                 {% for organization in organizations %}
                 <tr>
-                    <td> {{ organization.idOrganization      }}</td>
+                    <td> {{ organization.id_Organization     }}</td>
                     <td> {{ organization.nameOrganization    }}</td>
                     <td> {{ organization.taxIdOrganization   }}</td>
-                    <td> {{ organization.countryOrganization }}</td>
-                    <td> {{ organization.cityOrganization    }}</td>
+                    <td> {{ organization.id_Country          }}</td>
+                    <td> {{ organization.id_City             }}</td>
                     <td> {{ organization.addressOrganization }}</td>
                     <td class="text-center">
-                        <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
-                        <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                        <a href="{% url 'organization' organization.id_Organization %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                        <a href="{% url 'deleteOrganization' organization.id_Organization %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -51,7 +51,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="card-body mx-auto">
-                        <form action="" method="POST">
+                        <form action="{% url 'addOrganization' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-outline mb-4">
                                 <input type="text" name = "nameOrg" class="form-control" placeholder=" Nombre Organizacion" required>

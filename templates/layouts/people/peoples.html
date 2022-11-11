@@ -9,7 +9,7 @@
                 <tr>
                 <th>ID</th>
                 <th>Nombre</th>
-                <th>Apellido</th>
+                <th>Telefono</th>
                 <th>correo</th>
                 <th>Organizacion</th>
                 <th>Opciones</th>
@@ -24,8 +24,8 @@
                     <td>{{ people.emailPeople     }}</td>
                     <td>{{ people.id_Organization }}</td>
                     <td class="text-center">
-                        <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
-                        <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                        <a href="{% url 'people' people.id_People %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                        <a href="{% url 'deletePeople' people.id_People %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -40,7 +40,7 @@
     </button>
 
     <!-- Modal  -->
-    <div class="modal fade" id="addOrganizationModal" aria-labelledby="addPeopleModal" >
+    <div class="modal fade" id="addPeopleModal" aria-labelledby="addPeopleModal" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -49,20 +49,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="card-body mx-auto">
-                        <form action="" method="POST">
+                        <form action="{% url 'addPeople' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-outline mb-4">
-                                <input type="text" name = "namePeope" class="form-control" placeholder=" Nombre Completo" required>
+                                <input type="text" name = "namePeople" class="form-control" placeholder=" Nombre Completo" required>
                             </div>
                             <div class="form-outline mb-4">
                                 <input type="email" name = "emailPeople" class="form-control" placeholder="Correo" required>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="tel" name = "phonePeople" class="form-control" placeholder="Telefono" required>
+                                <input type="text" name = "phonePeople" class="form-control" placeholder="Telefono" required>
                             </div>
                             <div class="col form-outline mb-4">
-                                <select name="countryOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
-                                    <option hidden selected>Pais</option>
+                                <select name="organization" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <option hidden selected>Organizacion</option>
                                     {% for organization in organizations %}
                                     <option value="{{organization.id_Organization}}">{{organization.nameOrganization}}</option>
                                     {% endfor %}

@@ -126,7 +126,7 @@ class TbPeople(models.Model):
     id_People    = models.AutoField(db_column='id_People', primary_key=True)
     namePeople   = models.CharField(db_column='namePeople', max_length=255 , null=False)
     emailPeople  = models.CharField(db_column='emailPeople', max_length=255 , null=False)
-    phonePeople  = models.IntegerField(db_column='phonePeople')
+    phonePeople  = models.BigIntegerField(db_column='phonePeople')
 
     # Dependencies tables
     id_Organization = models.ForeignKey('TbOrganization', db_column='id_Organization', on_delete=models.PROTECT)
