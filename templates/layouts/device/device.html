@@ -7,26 +7,24 @@
         <table id="dataTable" class="dataTable table table-striped">
             <thead class="table-dark">
                 <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Tax ID</th>
-                <th>Pais</th>
-                <th>Ciudad</th>
-                <th>Dirección</th>
-                <th>Opciones</th>
+                    <th>#</th>
+                    <th>Dispositivo</th>
+                    <th>Tipo</th>
+                    <th>Organizacion</th>
+                    <th>Creacion</th>
+                    <th>opciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for organization in organizations %}
+                {% for device in devices %}
                 <tr>
-                    <td> {{ organization.idOrganization      }}</td>
-                    <td> {{ organization.nameOrganization    }}</td>
-                    <td> {{ organization.taxIdOrganization   }}</td>
-                    <td> {{ organization.countryOrganization }}</td>
-                    <td> {{ organization.cityOrganization    }}</td>
-                    <td> {{ organization.addressOrganization }}</td>
+                    <td> {{ device.id_Device          }}</td>
+                    <td> {{ device.nameDevice         }}</td>
+                    <td> {{ device.id_DeviceType      }}</td>
+                    <td> {{ device.id_Organization    }}</td>
+                    <td> {{ device.creationDateDevice }}</td>
                     <td class="text-center">
-                        <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                        <a href="{% url 'device' device.id_Device %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
                         <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
                     </td>
                 </tr>
@@ -46,42 +44,55 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Agregar Organizacion</h5>
+                    <h5 class="modal-title">Agregar Dispositivo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="card-body mx-auto">
-                        <form action="" method="POST">
+                        <form action="{% url 'addDevice'%}" method="POST">
                             {% csrf_token %}
                             <div class="form-outline mb-4">
-                                <input type="text" name = "nameOrg" class="form-control" placeholder=" Nombre Organizacion" required>
+                                <input type="text" name = "nameDevice" class="form-control" placeholder=" Nombre Dispositivo" required>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="emailOrg" name = "emailOrg" class="form-control" placeholder="Correo" required>
+                                <input type="text" name = "tokenDevice" class="form-control" placeholder="Token" required>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="text" name = "addressOrg" class="form-control" placeholder="Direccion" required>
+                                <input type="date" name = "creationDateDevice" class="form-control" placeholder="Creacion Dispositivo" required>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="number" name = "taxIdOrg" class="form-control" placeholder="Tax ID" required>
+                                <select name="hwPlatform" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <option hidden selected>Tipo Dispositivo</option>
+                                    {% for hwPlatform in hwPlatforms %}
+                                    <option value="{{hwPlatform.id_HwPlatform}}">{{hwPlatform.nameHwPlatform}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="row">
                                 <div class="col form-outline mb-4">
-                                    <select name="countryOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
-                                        <option hidden selected>Pais</option>
-                                        {% for country in countries %}
-                                        <option value="{{country.id_Country}}">{{country.nameCountry}}</option>
+                                    <select name="typeDevice" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                        <option hidden selected>Tipo Dispositivo</option>
+                                        {% for typeDevice in typeDevices %}
+                                        <option value="{{typeDevice.id_DeviceType}}">{{typeDevice.nameDeviceType}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col form-outline mb-4">
-                                    <select name="cityOrg" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
-                                        <option hidden selected>Ciudad</option>
-                                        {% for city in citys %}
-                                        <option value="{{city.id_City}}">{{city.nameCity}}</option>
+                                    <select name="osDevice" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                        <option hidden selected>Sistema Operativo</option>
+                                        {% for os in osDevices %}
+                                        <option value="{{os.id_Os}}">{{os.nameOs}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
+                            </div>
+                            <div class="col form-outline mb-4">
+                                <select name="organization" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                                    <option hidden selected>Organizacion</option>
+                                    {% for organization in organizations %}
+                                    <option value="{{organization.id_Organization}}">{{organization.nameOrganization}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div>
                                 <button class="btn btn-primary ">Agregar</button>

@@ -82,10 +82,10 @@ urlpatterns = [
     ##################
     #  Dispositivos  #
     ##################
-    path('devices/', views.devices, name = "devices"),
-    path('add_device/', views.add_device, name = "add_device"),
-    path('formulario_actualizar_dispositivo/<int:id_device>/', views.formulario_actualizar_dispositivo, name="formulario_actualizar_dispositivo"),
-    path('actualizar_dispositivo/<int:id_device>/', views.actualizar_dispositivo, name ="actualizar_dispositivo"),
+    path('devices/', views.getAllDevices, name = "devices"),
+    path('device/<int:id_Device>', views.getDevice, name = "device"),
+    path('addDevice/', views.addDevice, name = "addDevice"),
+    path('updateDevice/<int:id_Device>/', views.updateDevice, name="updateDevice"),
     path('delete_device/<int:idDevice>/', views.delete_device, name = "delete_device"),
 
 

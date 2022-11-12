@@ -144,7 +144,7 @@ class TbDevice(models.Model):
     creationDateDevice  = models.DateTimeField(db_column='creationDateDevice' , null=True)
 
     # Dependencies tables
-    id_hwPlatform   = models.ForeignKey('TbHwPlatform', db_column='id_HwPlatform', on_delete=models.PROTECT)
+    id_HwPlatform   = models.ForeignKey('TbHwPlatform', db_column='id_HwPlatform', on_delete=models.PROTECT)
     id_Os           = models.ForeignKey('TbOs', db_column='id_Os', on_delete=models.PROTECT)
     id_DeviceType   = models.ForeignKey('TbDeviceType', db_column='id_DeviceType', on_delete=models.PROTECT)
     id_Organization = models.ForeignKey('TbOrganization', db_column='id_Organization', on_delete=models.PROTECT)
