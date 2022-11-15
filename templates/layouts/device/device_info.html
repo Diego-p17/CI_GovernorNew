@@ -6,7 +6,7 @@
   <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
       <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Información</button>
-      <button class="nav-link" id="nav-people-tab" data-bs-toggle="tab" data-bs-target="#nav-people" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">####</button>
+      <button class="nav-link" id="nav-location-tab" data-bs-toggle="tab" data-bs-target="#nav-location" type="button" role="tab" aria-controls="nav-location" aria-selected="false">Ubicacion</button>
       <button class="nav-link" id="nav-sites-tab" data-bs-toggle="tab" data-bs-target="#nav-sites" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">####</button>
       <button class="nav-link" id="nav-devices-tab" data-bs-toggle="tab" data-bs-target="#nav-devices" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">####</button>
     </div>
@@ -83,62 +83,80 @@
     </div>
 
 
-    <!-- TAB Personas -->
-    <div class="tab-pane fade container_sm shadow p-4 bg-body rounded" id="nav-people" role="tabpanel" aria-labelledby="nav-people-tab">
-        <!-- Table -->
-        <div class="table-responsive">
-          <table id="dataTable" class="dataTable table table-striped">
-            <thead class="table-dark text-center">
-              <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Telefono</th>
-                <th class="text-center">Opciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for peopleOrg in peoplesOrg %}
-                <tr>
-                  <td>{{ peopleOrg.namePeople }}</td>
-                  <td>{{ peopleOrg.emailPeople }}</td>
-                  <td>{{ peopleOrg.phonePeople}}</td>
-                  <td class="text-center">
-                    <a href="{% url 'people' peopleOrg.id_People %}"><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
-                    <a href="{% url 'deletePeopleOrg' peopleOrg.id_People %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddPeople">
-          Agregar
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="modalAddPeople" tabindex="-1" aria-labelledby="modalAddPeople" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalAddPeople">Agregar Persona</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- TAB location -->
+    <div class="tab-pane fade container_sm shadow p-5 bg-body rounded" id="nav-location" role="tabpanel" aria-labelledby="nav-location-tab">
+        <div class=" row mb-5">
+          <div class="col md-4 p-2">
+            <h4 class="text-center p-3">GPS</h4>
+              {{location |   safe  }}
+          </div>
+          <div class="col md-4 p-2 shadow-n" >
+            <h4 class="text-center p-3">Localizacion Dispositivo </h4>
+            <form action="{% url 'addLocation' device.id_Device %}" method="POST">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col form-outline mb-4">
+                    <input type="text" name = "cordinate-x" class="form-control" placeholder="Cordenada X" value="{{cordinate_x}}" required>
+                </div>
+                <div class="col form-outline mb-4">
+                    <input type="text" name = "cordinate-y" class="form-control" placeholder="Cordenada Y" value="{{cordinate_y}}" required>
+                </div>
               </div>
-              <div class="modal-body">
-                <h3>Personas:</h3>
-                {% if peoples|length == 0  %}
-                  <p>No hay personas para AGREGAR</p>
-                {% else %}
-                  <form action="{% url 'addPeopleOrg' idOrganization %}" method="POST">
+              <div class="form-outline mb-4">
+                <select name="zone" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                  <option hidden selected>Seleccionar Zona</option>
+                  {% if zones %}
+                    {% for zone in zones %}
+                    <option value="{{zone.id_Zone}}">{{zone.nameZone}} ( {{zone.id_Site.nameSite}} )</option>
+                    {% endfor %}
+                  {% else %}
+                    <option value="0">No hay Zonas</option>
+                  {% endif %}
+                </select>
+              </div>
+              <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-primary ">Agregar</button>
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalUpdateLocation">Actualizar</button>
+                  <button class="btn btn-danger ">Eliminar</button>
+              </div>
+            </form>
+          </div>
+          <!-- Modal Zone -->
+          <div class="modal fade" id="modalUpdateLocation" tabindex="-1" aria-labelledby="modalUpdateLocation" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Modificar Zona</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <h3 class="border-bottom p-2 mb-4" >Zona:</h3>
+                  <form action="{% url 'addLocation' device.id_Device %}" method="POST">
                     {% csrf_token %}
-                    <select class="form-select" name="people" aria-label="Organización">
-                      {% for people in peoples %}
-                        <option value="{{people.id_People}}">{{people.namePeople}}</option>
-                      {% endfor %}
-                    </select>
-                    <button class="btn btn-primary mt-5">Agregar</button>
+                    <div class="row">
+                      <div class="col form-outline mb-4">
+                          <input type="text" name = "cordinate-x" class="form-control" placeholder="Cordenada X" value="{{cordinate_x}}" required>
+                      </div>
+                      <div class="col form-outline mb-4">
+                          <input type="text" name = "cordinate-y" class="form-control" placeholder="Cordenada Y" value="{{cordinate_y}}" required>
+                      </div>
+                    </div>
+                    <div class="form-outline mb-4">
+                      <select name="zone" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
+                        <option hidden selected>Seleccionar Zona</option>
+                        {% if zones %}
+                          {% for zone in zones %}
+                          <option value="{{zone.id_Zone}}">{{zone.nameZone}} ( {{zone.id_Site.nameSite}} )</option>
+                          {% endfor %}
+                        {% else %}
+                          <option value="0">No hay Zonas</option>
+                        {% endif %}
+                      </select>
+                    </div>
+                    <button class="btn btn-primary ">Agregar</button>
                   </form>
-                {% endif %}
+                </div>
               </div>
             </div>
           </div>

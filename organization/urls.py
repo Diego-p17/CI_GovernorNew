@@ -87,6 +87,7 @@ urlpatterns = [
     path('addDevice/', views.addDevice, name = "addDevice"),
     path('updateDevice/<int:id_Device>/', views.updateDevice, name="updateDevice"),
     path('delete_device/<int:idDevice>/', views.delete_device, name = "delete_device"),
+    path('addLocation/<int:id_Device>/', views.addLocation, name = "addLocation"),
 
 
 ]

@@ -1,6 +1,7 @@
 from django.shortcuts  import render, HttpResponse, redirect
 from django.contrib    import messages
 from .                 import models
+import folium
 
 
 
@@ -952,11 +953,73 @@ def getDevice(request, id_Device):
     typeDevices   = models.TbDeviceType.objects.all()
     osDevices     = models.TbOs.objects.all()
     organizations = models.TbOrganization.objects.all()
-    zones         = models.TbZone.objects.all()
 
-    context = {'device':device, "hwPlatforms":hwPlatforms, "typeDevices":typeDevices, "osDevices":osDevices, "organizations":organizations, "zones":zones}
+    sites     = models.TbSite.objects.filter(id_Organization = device.id_Organization)
+
+    zonesList = []
+    for site in sites:
+        zones = models.TbZone.objects.filter(id_Site = site.id_Site)
+        for zone in zones:
+            zonesList.append(zone)
+    localization = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True )
+    localization = localization.gpsDataLocation.split(",")
+
+
+    location = getLocation(device)
+
+    context = {'device':device, "hwPlatforms":hwPlatforms, "typeDevices":typeDevices, "osDevices":osDevices, "organizations":organizations, "zones": zonesList, "location":location, "cordinate_x":localization[0] , "cordinate_y":localization[1] }
 
     return render(request, 'layouts/device/device_info.html', context)
+
+def getLocation(device):
+
+    localization = models.TbLocalization.objects.filter(id_Device=device.id_Device).exclude(isActive = False)
+
+    if  localization:
+        for location in localization:
+            cordinates  = location.gpsDataLocation.split(',')
+            cordinate_x = cordinates[0]
+            cordinate_y = cordinates[1]
+
+            map = folium.Map(location=[cordinate_x, cordinate_y], zoom_start=25)
+            folium.Marker(
+                        location = [cordinate_x, cordinate_y],
+                        popup    = f"<i>{device.id_Organization}</i>",
+                        tooltip  = "informacion"
+                        ).add_to(map)
+    else:
+        map = folium.Map()
+
+    map = map._repr_html_()
+    return map
+def addLocation(request, id_Device):
+
+    if request.method == "POST":
+        cordinate_x = float(request.POST['cordinate-x'])
+        cordinate_y = float(request.POST['cordinate-y'])
+        zoneDevice  = int(request.POST['zone'])
+
+        device = models.TbDevice.objects.get(id_Device =id_Device)
+        zone   = models.TbZone.objects.get(id_Zone =zoneDevice)
+        gpsDataLocation = f"{cordinate_x},{cordinate_y}"
+        locationCheck = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True)
+        if locationCheck:
+            
+            locationCheck.isActive = False
+            locationCheck.save()
+
+        if zoneDevice == 0 :
+            messages.warning(request, "el sitio no tiene zonas agregadas")
+            return redirect('device', id_Device)
+        elif device:
+            location = models.TbLocalization( gpsDataLocation = gpsDataLocation, id_Zone = zone, id_Device= device)
+            location.save()
+            messages.success(request, "localizacion agregada correctamente")
+            return redirect('device', id_Device)
+        else:
+            messages.warning(request, "dispositivo no existe")
+            return redirect('device', id_Device)
+
 
 # add device
 def addDevice(request):

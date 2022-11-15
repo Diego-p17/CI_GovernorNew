@@ -174,7 +174,7 @@ class TbLocalization(models.Model):
     isActive        = models.BooleanField(db_column='isActive', default=True)
     # Dependencies tables
     id_Device = models.ForeignKey('TbDevice', db_column='id_Device', on_delete=models.PROTECT)
-    idZone    = models.ForeignKey('TbZone', db_column='id_Zone', on_delete=models.PROTECT)
+    id_Zone    = models.ForeignKey('TbZone', db_column='id_Zone', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.gpsDataLocation
