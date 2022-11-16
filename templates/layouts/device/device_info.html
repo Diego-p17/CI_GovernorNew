@@ -86,11 +86,11 @@
     <!-- TAB location -->
     <div class="tab-pane fade container_sm shadow p-5 bg-body rounded" id="nav-location" role="tabpanel" aria-labelledby="nav-location-tab">
         <div class=" row mb-5">
-          <div class="col md-4 p-2">
+          <div class="col md-4 p-2 m-2">
             <h4 class="text-center p-3">GPS</h4>
               {{location |   safe  }}
           </div>
-          <div class="col md-4 p-2 shadow-n" >
+          <div class="col md-4 p-2 m-2" >
             <h4 class="text-center p-3">Localizacion Dispositivo </h4>
             <form action="{% url 'addLocation' device.id_Device %}" method="POST">
               {% csrf_token %}
@@ -116,50 +116,48 @@
               </div>
               <div class="d-flex justify-content-center gap-2">
                   <button class="btn btn-primary ">Agregar</button>
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalUpdateLocation">Actualizar</button>
                   <button class="btn btn-danger ">Eliminar</button>
               </div>
             </form>
           </div>
-          <!-- Modal Zone -->
-          <div class="modal fade" id="modalUpdateLocation" tabindex="-1" aria-labelledby="modalUpdateLocation" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Modificar Zona</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <h3 class="border-bottom p-2 mb-4" >Zona:</h3>
-                  <form action="{% url 'addLocation' device.id_Device %}" method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                      <div class="col form-outline mb-4">
-                          <input type="text" name = "cordinate-x" class="form-control" placeholder="Cordenada X" value="{{cordinate_x}}" required>
-                      </div>
-                      <div class="col form-outline mb-4">
-                          <input type="text" name = "cordinate-y" class="form-control" placeholder="Cordenada Y" value="{{cordinate_y}}" required>
-                      </div>
-                    </div>
-                    <div class="form-outline mb-4">
-                      <select name="zone" class="form-select p-2 mb-3" aria-label=".form-select-lg" required>
-                        <option hidden selected>Seleccionar Zona</option>
-                        {% if zones %}
-                          {% for zone in zones %}
-                          <option value="{{zone.id_Zone}}">{{zone.nameZone}} ( {{zone.id_Site.nameSite}} )</option>
-                          {% endfor %}
-                        {% else %}
-                          <option value="0">No hay Zonas</option>
-                        {% endif %}
-                      </select>
-                    </div>
-                    <button class="btn btn-primary ">Agregar</button>
-                  </form>
-                </div>
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Historial de Ubicacion
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body p-5">
+                  {% if history ==  None %}
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                  {% else %}
+                  <div class="table-responsive ">
+                    <table class="table table-sm align-middle mw_6">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">cordenadas</th>
+                          <th scope="col">Zona</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for location in history %}
+                        <tr>
+                          <th scope="row">{{ location.id_Localization }}</th>
+                          <td>{{ location.gpsDataLocation }}</td>
+                          <td>{{ location.id_Zone}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% endif%}
+                  </div>
               </div>
             </div>
           </div>
+
         </div>
     </div>
     <!---->

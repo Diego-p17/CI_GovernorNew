@@ -54,7 +54,6 @@ urlpatterns = [
     ###########
     path('sites/', views.getAllSites, name = "sites"),
     path('site/<int:id_Site>/', views.getSite, name = "site"),
-    path('form_site/', views.form_site, name = "form_site"),
     path('addSite/', views.addSite, name = "addSite"),
     path('updatesite/<int:id_Site>', views.updateSite, name = "updateSite"),
     #zoneSite
@@ -89,5 +88,8 @@ urlpatterns = [
     path('delete_device/<int:idDevice>/', views.delete_device, name = "delete_device"),
     path('addLocation/<int:id_Device>/', views.addLocation, name = "addLocation"),
 
-
+    #####################
+    #  Autporizathions  #
+    #####################
+    path('authorizations/', views.getAllAuthorizations, name = "authorizations"),
 ]

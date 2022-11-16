@@ -1,3 +1,4 @@
+from ast import Try
 from django.shortcuts  import render, HttpResponse, redirect
 from django.contrib    import messages
 from .                 import models
@@ -379,7 +380,6 @@ def updateSettingsType(request, id_SettingsType):
 #   Organizations   #
 #-------------------#
 
-#Show all organizations
 def getAllOrganizations(request):
     organizations = models.TbOrganization.objects.all().exclude(nameOrganization = "sin organizacion")
     citys         = models.TbCity.objects.all()
@@ -390,8 +390,6 @@ def getAllOrganizations(request):
                      "countries"    : countries
                     }
     return render(request, 'layouts/organization/organizations.html', context)
-
-#show all data the organization
 def getOrganization(request, id_Organization):
     # General Tables
     countries = models.TbCountry.objects.all()
@@ -431,8 +429,6 @@ def getOrganization(request, id_Organization):
               }
 
     return render(request, 'layouts/organization/organization_info.html', context)
-
-# Add new Organization
 def addOrganization(request):
     if request.method == 'POST':
         nameOrg    = request.POST['nameOrg']
@@ -471,7 +467,7 @@ def deleteOrganization(request, id_Organization):
         messages.warning(request, "Organizacion no encontrada")
         return redirect(to='home')
 
-#Update Data Organization
+
 def updateOrganization(request, id_Organization):
 
     if request.method == 'POST':
@@ -505,8 +501,6 @@ def updateOrganization(request, id_Organization):
 
             messages.success(request, "La Organizacion fue actualizada con exito")
             return redirect( 'organization' , id_Organization )
-
-#Add people at the  organization
 def addPeopleOrg(request, id_Organization):
     if request.method == 'POST':
 
@@ -521,9 +515,6 @@ def addPeopleOrg(request, id_Organization):
     else:
         messages.error(request, "Ha Ocurrido Un error Inesperado")
         return redirect('organization', id_Organization)
-
-
-#Delete People at the organization
 def deletePeopleOrg(request, id_People):
 
     emptyOrganization = models.TbOrganization.objects.get(nameOrganization = 'sin organizacion')
@@ -543,7 +534,6 @@ def deletePeopleOrg(request, id_People):
         messages.error(request, "Ha ocurrido un error al eliminar la persona")
         return redirect('organization', idOrganization)
 
-#Add site at the organization
 def addSiteOrg(request, id_Organization):
 
     if request.method == 'POST':
@@ -559,8 +549,6 @@ def addSiteOrg(request, id_Organization):
     else:
         messages.error(request, "Ha Ocurrido Un error Inesperado")
         return redirect('organization', id_Organization)
-
-# Delete Site the organization
 def deleteSiteOrg(request, id_Site):
 
     emptyOrganization = models.TbOrganization.objects.get(nameOrganization = 'sin organizacion')
@@ -581,13 +569,10 @@ def deleteSiteOrg(request, id_Site):
         return redirect('organization', idOrganization)
 
 
-
-
 #-------------#
 #    Sites    #
 #-------------#
 
-# show all sites
 def getAllSites(request):
     sites         = models.TbSite.objects.all()
     organizations = models.TbOrganization.objects.all()
@@ -600,8 +585,6 @@ def getAllSites(request):
                      'countries'     :countries
                      }
     return render(request, 'layouts/site/sites.html', context)
-
-# show all data the site
 def getSite(request, id_Site):
 
     site          = models.TbSite.objects.get(id_Site = id_Site)
@@ -619,7 +602,7 @@ def getSite(request, id_Site):
 
     return render(request, 'layouts/site/site_info.html', context)
 
-#add site
+
 def addSite(request):
     if request.method == 'POST':
 
@@ -641,8 +624,6 @@ def addSite(request):
             site.save()
             messages.success(request, 'el sitio ya fue agregado')
             return redirect(to='sites')
-
-#update Site
 def updateSite(request, id_Site):
     if request.method == 'POST':
 
@@ -677,9 +658,6 @@ def updateSite(request, id_Site):
 
             messages.success(request, "Informacion actualizada")
             return redirect('site', id_Site)
-
-
-#add zone the site
 def addZone(request, id_Site):
 
     if request.method == 'POST':
@@ -703,8 +681,6 @@ def addZone(request, id_Site):
 
     else:
         return redirect('site', id_Site)
-
-#update zone the site
 def updateZone(request, id_Zone):
     if request.method == 'POST':
         nameZone  = request.POST['nameZone']
@@ -727,8 +703,6 @@ def updateZone(request, id_Zone):
 
     else:
         return redirect('site', id_Site)
-
-#delete zone the site
 def deleteZone(request, id_Zone):
     try:
         zone    = models.TbZone.objects.get(id_Zone = id_Zone)
@@ -741,26 +715,15 @@ def deleteZone(request, id_Zone):
         messages.success(request, "ha ocurrido un error ")
         return redirect('sites')
 
-#view form add site
-def form_site(request):
-    organizations = models.Organizations.objects.all().values('idOrganization', 'nameOrganization')
-    context = { 'organizations':organizations}
-
-    return render(request, 'sites/form_site.html', context)
-
-
 #-------------#
 #   Peoples   #
 #-------------#
 
-# Show all peoples
 def getPeoples(request):
     peoples       = models.TbPeople.objects.all()
     organizations = models.TbOrganization.objects.all()
     context = {'peoples':peoples, 'organizations':organizations}
     return render(request, 'layouts/people/peoples.html', context)
-
-# show data people information
 def peopleInfo(request, id_People):
     people         = models.TbPeople.objects.get(id_People = id_People)
     organizations  = models.TbOrganization.objects.all()
@@ -773,9 +736,6 @@ def peopleInfo(request, id_People):
               }
 
     return render(request, 'layouts/people/people_info.html', context)
-
-
-# Add new People
 def addPeople(request):
     if request.method == 'POST':
         namePeople      = request.POST['namePeople']
@@ -795,8 +755,6 @@ def addPeople(request):
             return redirect(to='peoples')
     else:
         return redirect(to='peoples')
-
-# Update people
 def updatePeople(request, id_People):
     if request.method == 'POST':
         namePeople     = request.POST['namePeople']
@@ -824,8 +782,6 @@ def updatePeople(request, id_People):
         else:
             messages.warning( request, 'ha ocurrido un error al actualizar')
             return redirect('peopleInfo', id_People)
-
-#Delete people
 def deletePeople(request, id_People):
 
     people = models.TbPeople.objects.get(id_People = id_People)
@@ -836,6 +792,219 @@ def deletePeople(request, id_People):
     else:
         messages.warning( request, 'ha ocurrido un error al eliminar')
         return redirect(to='peoples')
+
+
+#----------------#
+#     Devices    #
+#----------------#
+
+# show all devices
+def getAllDevices(request):
+
+    devices = models.TbDevice.objects.all()
+
+    hwPlatforms   = models.TbHwPlatform.objects.all()
+    typeDevices   = models.TbDeviceType.objects.all()
+    osDevices     = models.TbOs.objects.all()
+    organizations = models.TbOrganization.objects.all()
+    zones         = models.TbZone.objects.all()
+
+    context = {'devices':devices, "hwPlatforms":hwPlatforms, "typeDevices":typeDevices, "osDevices":osDevices, "organizations":organizations, "zones":zones}
+
+    return render(request, 'layouts/device/device.html', context)
+
+def getDevice(request, id_Device):
+
+    device    = models.TbDevice.objects.get(id_Device = id_Device)
+    parseDate = device.creationDateDevice.strftime('%Y-%m-%d')
+    device.creationDateDevice = parseDate
+    hwPlatforms   = models.TbHwPlatform.objects.all()
+    typeDevices   = models.TbDeviceType.objects.all()
+    osDevices     = models.TbOs.objects.all()
+    organizations = models.TbOrganization.objects.all()
+
+    sites     = models.TbSite.objects.filter(id_Organization = device.id_Organization)
+
+    zonesList = []
+    for site in sites:
+        zones = models.TbZone.objects.filter(id_Site = site.id_Site)
+        for zone in zones:
+            zonesList.append(zone)
+
+    localization = models.TbLocalization.objects.filter(id_Device = id_Device , isActive = True )
+
+    if localization:
+        localization = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True )
+        localization = localization.gpsDataLocation.split(",")
+    else:
+        localization = [0,0]
+
+
+    location = getLocation(device)
+    historyDevice = getHistoryLocation(id_Device)
+
+    context = {
+                "device"        :device,
+                "hwPlatforms"   :hwPlatforms,
+                "typeDevices"   :typeDevices,
+                "osDevices"     :osDevices,
+                "organizations" :organizations,
+                "zones"         :zonesList,
+                "location"      :location,
+                "history"       :historyDevice,
+                "cordinate_x"   :localization[0] ,
+                "cordinate_y"   :localization[1] }
+
+    return render(request, 'layouts/device/device_info.html', context)
+
+def getLocation(device):
+
+    localization = models.TbLocalization.objects.filter(id_Device=device.id_Device).exclude(isActive = False)
+
+    if  localization:
+        for location in localization:
+            cordinates  = location.gpsDataLocation.split(',')
+            cordinate_x = cordinates[0]
+            cordinate_y = cordinates[1]
+
+            map = folium.Map(location=[cordinate_x, cordinate_y], zoom_start=25)
+            folium.Marker(
+                        location = [cordinate_x, cordinate_y],
+                        popup    = f"<i>{device.id_Organization}</i>",
+                        tooltip  = "informacion"
+                        ).add_to(map)
+    else:
+        map = folium.Map()
+
+    map = map._repr_html_()
+    return map
+def getHistoryLocation(id_Device):
+    try:
+        localization = models.TbLocalization.objects.filter(id_Device = id_Device , isActive = False)
+        return localization
+    except:
+        return None
+def addLocation(request, id_Device):
+
+    if request.method == "POST":
+        cordinate_x = float(request.POST['cordinate-x'])
+        cordinate_y = float(request.POST['cordinate-y'])
+        zoneDevice  = int(request.POST['zone'])
+
+        device = models.TbDevice.objects.get(id_Device =id_Device)
+        zone   = models.TbZone.objects.get(id_Zone =zoneDevice)
+        gpsDataLocation = f"{cordinate_x},{cordinate_y}"
+
+        locationCheck = models.TbLocalization.objects.filter(id_Device = id_Device , isActive = True)
+
+        if locationCheck:
+            locationCheck = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True)
+            locationCheck.isActive = False
+            locationCheck.save()
+
+        if zoneDevice == 0 :
+            messages.warning(request, "el sitio no tiene zonas agregadas")
+            return redirect('device', id_Device)
+
+        elif device:
+            location = models.TbLocalization( gpsDataLocation = gpsDataLocation, id_Zone = zone, id_Device= device)
+            location.save()
+            messages.success(request, "localizacion agregada correctamente")
+            return redirect('device', id_Device)
+
+        else:
+            messages.warning(request, "dispositivo no existe")
+            return redirect('device', id_Device)
+
+
+# add device
+def addDevice(request):
+
+    if request.method == 'POST':
+        nameDevice   = request.POST['nameDevice']
+        tokenDevice  = request.POST['tokenDevice']
+        creationDate = request.POST['creationDateDevice']
+        hwPlatform   = int(request.POST['hwPlatform'])
+        typeDevice   = int(request.POST['typeDevice'])
+        osDevice     = int(request.POST['osDevice'])
+        organization = int(request.POST['organization'])
+
+        deviceCheck = models.TbDevice.objects.filter( nameDevice = nameDevice , id_Organization = organization)
+        if deviceCheck:
+            messages.warning( request, 'EL dispositivo ya existe')
+            return redirect(to='devices')
+
+        else:
+            #foreignKeys
+            idHwPlatform   = models.TbHwPlatform.objects.get(id_HwPlatform = hwPlatform)
+            idTypeDevice   = models.TbDeviceType.objects.get(id_DeviceType = typeDevice)
+            idOsDevice     = models.TbOs.objects.get(id_Os = osDevice)
+            idOrganization = models.TbOrganization.objects.get(id_Organization = organization)
+
+            newDevice = models.TbDevice(nameDevice = nameDevice, tokenDevice = tokenDevice , creationDateDevice = creationDate,  id_DeviceType = idTypeDevice, id_HwPlatform = idHwPlatform , id_Os = idOsDevice, id_Organization = idOrganization)
+            newDevice.save()
+            messages.success( request, 'Dispositivo Ingresado')
+            return redirect(to='devices')
+
+    messages.warning( request, 'Ha Ocurrido un error inesperado')
+    return redirect(to='devices')
+def updateDevice(request, id_Device):
+    if request.method == 'POST':
+        nameDevice   = request.POST['nameDevice']
+        tokenDevice  = request.POST['tokenDevice']
+        creationDate = request.POST['creationDateDevice']
+        hwPlatform   = int(request.POST['hwPlatform'])
+        typeDevice   = int(request.POST['typeDevice'])
+        osDevice     = int(request.POST['osDevice'])
+        organization = int(request.POST['organization'])
+
+        deviceCheck = models.TbDevice.objects.filter( nameDevice = nameDevice , id_Organization = organization).exclude(id_Device = id_Device)
+        if deviceCheck:
+            messages.warning( request, 'EL dispositivo ya existe')
+            return redirect( 'device' , id_Device)
+        else:
+            device = models.TbDevice.objects.get(id_Device = id_Device)
+            if device.nameDevice == nameDevice and device.tokenDevice == tokenDevice and device.creationDateDevice == creationDate and device.id_HwPlatform.id_HwPlatform == hwPlatform and device.id_DeviceType.id_DeviceType == typeDevice and device.id_Os.id_Os == osDevice and device.id_Organization.id_Organization == organization:
+                messages.warning( request, 'ingrese valores distintos')
+                return redirect( 'device' , id_Device)
+            else:
+                #foreignKeys
+                idHwPlatform   = models.TbHwPlatform.objects.get(id_HwPlatform = hwPlatform)
+                idTypeDevice   = models.TbDeviceType.objects.get(id_DeviceType = typeDevice)
+                idOsDevice     = models.TbOs.objects.get(id_Os = osDevice)
+                idOrganization = models.TbOrganization.objects.get(id_Organization = organization)
+
+                device.nameDevice         = nameDevice
+                device.tokenDevice        = tokenDevice
+                device.creationDateDevice = creationDate
+                device.id_HwPlatform      = idHwPlatform
+                device.id_DeviceType      = idTypeDevice
+                device.id_Os              = idOsDevice
+                device.id_Organization    = idOrganization
+
+                device.save()
+
+                messages.success( request, 'Dispositivo Actualizado')
+                return redirect( 'device' , id_Device)
+
+    messages.warning( request, 'Ha Ocurrido un error inesperado')
+    return redirect(to='devices')
+
+
+# Eliminar dispostivos atravez de la interfaz
+def delete_device(request, idDevice):
+
+
+    device = models.Devices.objects.get(idDevice = idDevice)
+    device.delete()
+
+    return redirect('devices')
+
+#--------------------#
+#   Authorizations   #
+#--------------------#
+def getAllAuthorizations(request):
+    return render(request, 'layouts/authorization/authorizations.html',{})
 
 #------------------------------------------------------------------------------
 # Muestra los permisos relacionados a la persona seleccionada persona
@@ -924,232 +1093,4 @@ def guardar_permiso(request, id_persona):
     return redirect('tabs_personas', id_persona)
 
 #------------------------------------------------------------------------------
-
-#----------------#
-#     Devices    #
-#----------------#
-
-# show all devices
-def getAllDevices(request):
-
-    devices = models.TbDevice.objects.all()
-
-    hwPlatforms   = models.TbHwPlatform.objects.all()
-    typeDevices   = models.TbDeviceType.objects.all()
-    osDevices     = models.TbOs.objects.all()
-    organizations = models.TbOrganization.objects.all()
-    zones         = models.TbZone.objects.all()
-
-    context = {'devices':devices, "hwPlatforms":hwPlatforms, "typeDevices":typeDevices, "osDevices":osDevices, "organizations":organizations, "zones":zones}
-
-    return render(request, 'layouts/device/device.html', context)
-
-def getDevice(request, id_Device):
-
-    device    = models.TbDevice.objects.get(id_Device = id_Device)
-    parseDate = device.creationDateDevice.strftime('%Y-%m-%d')
-    device.creationDateDevice = parseDate
-    hwPlatforms   = models.TbHwPlatform.objects.all()
-    typeDevices   = models.TbDeviceType.objects.all()
-    osDevices     = models.TbOs.objects.all()
-    organizations = models.TbOrganization.objects.all()
-
-    sites     = models.TbSite.objects.filter(id_Organization = device.id_Organization)
-
-    zonesList = []
-    for site in sites:
-        zones = models.TbZone.objects.filter(id_Site = site.id_Site)
-        for zone in zones:
-            zonesList.append(zone)
-    localization = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True )
-    localization = localization.gpsDataLocation.split(",")
-
-
-    location = getLocation(device)
-
-    context = {'device':device, "hwPlatforms":hwPlatforms, "typeDevices":typeDevices, "osDevices":osDevices, "organizations":organizations, "zones": zonesList, "location":location, "cordinate_x":localization[0] , "cordinate_y":localization[1] }
-
-    return render(request, 'layouts/device/device_info.html', context)
-
-def getLocation(device):
-
-    localization = models.TbLocalization.objects.filter(id_Device=device.id_Device).exclude(isActive = False)
-
-    if  localization:
-        for location in localization:
-            cordinates  = location.gpsDataLocation.split(',')
-            cordinate_x = cordinates[0]
-            cordinate_y = cordinates[1]
-
-            map = folium.Map(location=[cordinate_x, cordinate_y], zoom_start=25)
-            folium.Marker(
-                        location = [cordinate_x, cordinate_y],
-                        popup    = f"<i>{device.id_Organization}</i>",
-                        tooltip  = "informacion"
-                        ).add_to(map)
-    else:
-        map = folium.Map()
-
-    map = map._repr_html_()
-    return map
-def addLocation(request, id_Device):
-
-    if request.method == "POST":
-        cordinate_x = float(request.POST['cordinate-x'])
-        cordinate_y = float(request.POST['cordinate-y'])
-        zoneDevice  = int(request.POST['zone'])
-
-        device = models.TbDevice.objects.get(id_Device =id_Device)
-        zone   = models.TbZone.objects.get(id_Zone =zoneDevice)
-        gpsDataLocation = f"{cordinate_x},{cordinate_y}"
-        locationCheck = models.TbLocalization.objects.get(id_Device = id_Device , isActive = True)
-        if locationCheck:
-            
-            locationCheck.isActive = False
-            locationCheck.save()
-
-        if zoneDevice == 0 :
-            messages.warning(request, "el sitio no tiene zonas agregadas")
-            return redirect('device', id_Device)
-        elif device:
-            location = models.TbLocalization( gpsDataLocation = gpsDataLocation, id_Zone = zone, id_Device= device)
-            location.save()
-            messages.success(request, "localizacion agregada correctamente")
-            return redirect('device', id_Device)
-        else:
-            messages.warning(request, "dispositivo no existe")
-            return redirect('device', id_Device)
-
-
-# add device
-def addDevice(request):
-
-    if request.method == 'POST':
-        nameDevice   = request.POST['nameDevice']
-        tokenDevice  = request.POST['tokenDevice']
-        creationDate = request.POST['creationDateDevice']
-        hwPlatform   = int(request.POST['hwPlatform'])
-        typeDevice   = int(request.POST['typeDevice'])
-        osDevice     = int(request.POST['osDevice'])
-        organization = int(request.POST['organization'])
-
-        deviceCheck = models.TbDevice.objects.filter( nameDevice = nameDevice , id_Organization = organization)
-        if deviceCheck:
-            messages.warning( request, 'EL dispositivo ya existe')
-            return redirect(to='devices')
-
-        else:
-            #foreignKeys
-            idHwPlatform   = models.TbHwPlatform.objects.get(id_HwPlatform = hwPlatform)
-            idTypeDevice   = models.TbDeviceType.objects.get(id_DeviceType = typeDevice)
-            idOsDevice     = models.TbOs.objects.get(id_Os = osDevice)
-            idOrganization = models.TbOrganization.objects.get(id_Organization = organization)
-
-            newDevice = models.TbDevice(nameDevice = nameDevice, tokenDevice = tokenDevice , creationDateDevice = creationDate,  id_DeviceType = idTypeDevice, id_HwPlatform = idHwPlatform , id_Os = idOsDevice, id_Organization = idOrganization)
-            newDevice.save()
-            messages.success( request, 'Dispositivo Ingresado')
-            return redirect(to='devices')
-
-    messages.warning( request, 'Ha Ocurrido un error inesperado')
-    return redirect(to='devices')
-
-
-def updateDevice(request, id_Device):
-    if request.method == 'POST':
-        nameDevice   = request.POST['nameDevice']
-        tokenDevice  = request.POST['tokenDevice']
-        creationDate = request.POST['creationDateDevice']
-        hwPlatform   = int(request.POST['hwPlatform'])
-        typeDevice   = int(request.POST['typeDevice'])
-        osDevice     = int(request.POST['osDevice'])
-        organization = int(request.POST['organization'])
-
-        deviceCheck = models.TbDevice.objects.filter( nameDevice = nameDevice , id_Organization = organization).exclude(id_Device = id_Device)
-        if deviceCheck:
-            messages.warning( request, 'EL dispositivo ya existe')
-            return redirect( 'device' , id_Device)
-        else:
-            device = models.TbDevice.objects.get(id_Device = id_Device)
-            if device.nameDevice == nameDevice and device.tokenDevice == tokenDevice and device.creationDateDevice == creationDate and device.id_HwPlatform.id_HwPlatform == hwPlatform and device.id_DeviceType.id_DeviceType == typeDevice and device.id_Os.id_Os == osDevice and device.id_Organization.id_Organization == organization:
-                messages.warning( request, 'ingrese valores distintos')
-                return redirect( 'device' , id_Device)
-            else:
-                #foreignKeys
-                idHwPlatform   = models.TbHwPlatform.objects.get(id_HwPlatform = hwPlatform)
-                idTypeDevice   = models.TbDeviceType.objects.get(id_DeviceType = typeDevice)
-                idOsDevice     = models.TbOs.objects.get(id_Os = osDevice)
-                idOrganization = models.TbOrganization.objects.get(id_Organization = organization)
-
-                device.nameDevice         = nameDevice
-                device.tokenDevice        = tokenDevice
-                device.creationDateDevice = creationDate
-                device.id_HwPlatform      = idHwPlatform
-                device.id_DeviceType      = idTypeDevice
-                device.id_Os              = idOsDevice
-                device.id_Organization    = idOrganization
-
-                device.save()
-
-                messages.success( request, 'Dispositivo Actualizado')
-                return redirect( 'device' , id_Device)
-
-    messages.warning( request, 'Ha Ocurrido un error inesperado')
-    return redirect(to='devices')
-
-
-
-# Carga el formulario de actualización con los datos del dispositivo seleccionado
-def formulario_actualizar_dispositivo(request, id_device):
-
-    # Instancia del equipo seleccionado
-    device  = models.tb_devices.objects.get(id_device = id_device)
-
-    # Instancias de todos los cpu, so, zones, tipos disponibles
-    cpus    = models.tb_cpu.objects.all()
-    types   = models.tb_device_type.objects.all()
-    so      = models.tb_os.objects.all()
-    zones   = models.tb_zones.objects.all()
-
-    # Instancia de los datos del equipo seleccionado
-    cpu_    = models.tb_cpu.objects.get(cpu_name = device.id_cpu)
-    so_     = models.tb_os.objects.get(os_name = device.id_os)
-
-    zone_   = models.tb_zones.objects.get(zone_name = device.id_zone)
-    device_ = models.tb_device_type.objects.get(id_device_type = str(device.id_device_type))
-
-    # Fecha de creación en formato valido para Input Date HTML
-    fecha = device.date_created.strftime('%Y-%m-%d')
-
-    context = {"device": device, "cpus":cpus, "types":types, "os":so, "zones":zones, "fecha": fecha,
-               "so_":so_.id_os, "zone_": zone_.id_zone, "cpu_":cpu_.id_cpu, "device_": device_.id_device_type}
-
-    return render(request, 'dispositivos/actualizar_dispositivos.html', context)
-
-# Actualizar la información del dispostivo seleccionado
-def actualizar_dispositivo(request, id_device):
-
-    # Instancia del dispositivo
-    device = models.tb_devices.objects.get(id_device = id_device)
-
-    #Asignación d elos nuevos valores
-    device.ip_from          = request.POST['ip']
-    device.date_created     = request.POST['fecha']
-    device.id_device_type   = models.tb_device_type.objects.get(id_device_type = request.POST['type'])
-    device.id_cpu           = models.tb_cpu.objects.get(id_cpu = request.POST['cpu'])
-    device.id_os            = models.tb_os.objects.get(id_os = request.POST['os'])
-    device.id_zone          = models.tb_zones.objects.get(id_zone = request.POST['zone'])
-
-    # Guarda los cambios
-    device.save()
-
-    return redirect('/dispositivos/') 
-
-# Eliminar dispostivos atravez de la interfaz
-def delete_device(request, idDevice):
-
-
-    device = models.Devices.objects.get(idDevice = idDevice)
-    device.delete()
-
-    return redirect('devices')
 

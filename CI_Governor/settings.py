@@ -79,8 +79,8 @@ DATABASES = {
     'default':{
         'ENGINE':'mssql',
         'NAME':'CI_Governor',
-        'HOST':'LAPTOP-7FTL6JB8\SQLEXPRESS',
-        #'HOST':'NEO_DESKTOP', # Here
+        #'HOST':'LAPTOP-7FTL6JB8\SQLEXPRESS',
+        'HOST':'NEO_DESKTOP',
         'PORT':'',
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
