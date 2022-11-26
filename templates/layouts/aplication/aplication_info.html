@@ -1,0 +1,144 @@
+{% extends '../base.html'%}
+{% block tittle %}Aplicacion{% endblock %}
+{% block subtitle %}{{aplication.nameAplication}}{% endblock %}
+{% block container %}
+    <!-- HEAD TABS -->
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Información</button>
+        <button class="nav-link" id="nav-subModules-tab" data-bs-toggle="tab" data-bs-target="#nav-subModules" type="button" role="tab" aria-controls="nav-subModules" aria-selected="false">SubModulos</button>
+        <button class="nav-link" id="nav-devices-tab" data-bs-toggle="tab" data-bs-target="#nav-devices" type="button" role="tab" aria-controls="nav-devices" aria-selected="false">Equipos</button>
+      </div>
+    </nav>
+    <!-- TABS CONTENT  -->
+    <div class="tab-content" id="nav-tabContent">
+      <!-- TAB Informacion -->
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="container_sm shadow p-3 mb-5 bg-body rounded">
+          <div class="card-body mx-auto" style="max-width: 800px;">
+            <h2 class="mb-3">Informacion</h2>
+
+            <form action="" method="POST">
+              {% csrf_token %}
+                <div class="form-outline mb-4">
+                  <input type="text" name = "nameOrganization" class="form-control" placeholder="Aplicacion" value="{{aplication.nameAplication}}" required>
+                </div>
+                <div class="col form-outline mb-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Estado Aplicacion</label>
+                    </div>
+                </div>
+              <button class="btn btn-primary">Actualizar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB Permisos -->
+      <div class="tab-pane fade show" id="nav-subModules" role="tabpanel" aria-labelledby="nav-subModules-tab">
+        <div class="container_sm shadow p-5 mb-5 bg-body rounded">
+          <div class="row">
+            <h2 class="text-center">SubModulos</h2>
+          </div>
+          <!-- TABLE -->
+          <div class="table-responsive">
+            <table id="dataTable" class="dataTable table table-striped mt-3">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Description</th>
+                  <th class="text-center">Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for submodule in submodules %}
+                  <tr>
+                    <td> {{ submodule.id_SubModule         }} </td>
+                    <td> {{ submodule.nameSubModule        }} </td>
+                    <td> {{ submodule.descriptionSubModule }} </td>
+                    <td>
+                        <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
+                        <div class="d-inline">
+                            <!-- Button modal add_device  -->
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update{{submodule.id_SubModule }}"><i class="bi bi-arrow-repeat"></i></button>
+                            <!-- Modal add_device -->
+                            <div class="modal fade" id="update{{submodule.id_SubModule}}" tabindex="-1" aria-labelledby="updateCountry" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="update{{submodule.id_SubModule}}">Actualizar Sub-Modulo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="container_sm shadow p-2 mb-5 bg-body rounded" style="max-width: 600px"  >
+                                      <div class="card-body mx-auto " >
+                                        <form action="{% url 'updateSubModule' submodule.id_SubModule %}" method="POST">
+                                          {% csrf_token %}
+                                          <!-- Name Country -->
+                                          <div class="form-outline mb-4">
+                                            <div class="input-group mb-3">
+                                              <span class="input-group-text" id="basic-addon"><i class="bi bi-box"></i></span>
+                                              <input type="text" name = "nameSubModule" class="form-control" placeholder="SubModule" value="{{submodule.nameSubModule}}">
+                                            </div>
+                                          </div>
+                                          <div class="form-outline mb-4">
+                                            <textarea class="form-control" name="descriptionSubModule" placeholder="Descripcion" rows="3">{{submodule.descriptionSubModule}}</textarea>
+                                          </div>
+                                          <!-- Actualizar btn -->
+                                          <div class="d-block mt-3">
+                                            <button class="btn btn-primary w-100";">Actualizar</button>
+                                          </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- ADD PERMISSION -->
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSubModuleModal">
+            Agregar
+          </button>
+          <!-- Modal  -->
+          <div class="modal fade" id="addSubModuleModal" aria-labelledby="addSubModuleModal" >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Agregar sub Modulo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body mx-auto">
+                                <form action="{% url 'addSubmodule' aplication.id_Aplication %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-outline mb-4">
+                                        <input type="text" name = "nameSubModule" class="form-control" placeholder="SubModule" required>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <textarea class="form-control" name="descriptionSubModule" placeholder="Descripcion" rows="3"></textarea>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary ">Agregar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

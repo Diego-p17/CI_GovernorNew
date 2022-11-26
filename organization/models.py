@@ -185,13 +185,24 @@ class TbLocalization(models.Model):
 class TbAplication(models.Model):
     id_Aplication = models.AutoField(db_column='id_Aplication', primary_key=True)
     nameAplication = models.CharField(db_column='nameAplication', max_length=255 , null=False)
-    sectionAplication = models.CharField(db_column='sectionAplication', max_length= 255 , null=False)
 
     def __str__(self):
         return self.nameAplication
     class Meta:
         managed  = True
         db_table = 'Tb_Aplication'
+class TbSubModule(models.Model):
+    id_SubModule          = models.AutoField(db_column='id_SubModule', primary_key=True)
+    nameSubModule         = models.CharField(db_column='nameSubModule', max_length= 255 , null=False)
+    descriptionSubModule  = models.CharField(db_column='descriptionSubModule', max_length= 255, null=True)
+
+    id_Aplication = models.ForeignKey('TbAplication', db_column='id_Aplication', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.nameSubModule
+    class Meta:
+        managed  = True
+        db_table = 'Tb_SubModule'
 
 class TbAutorization(models.Model):
     id_Autorization   = models.AutoField(db_column='id_Autorization', primary_key=True)
@@ -206,6 +217,7 @@ class TbAutorization(models.Model):
     class Meta:
         managed  = True
         db_table = 'Tb_Autorization'
+
 
 class TbSettings(models.Model):
     id_Settings   = models.AutoField(db_column='id_Setting', primary_key=True)

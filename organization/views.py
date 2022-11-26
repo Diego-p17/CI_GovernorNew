@@ -995,7 +995,7 @@ def updateDevice(request, id_Device):
 def delete_device(request, idDevice):
 
 
-    device = models.Devices.objects.get(idDevice = idDevice)
+    device = models.TbDevice.objects.get(id_Device = idDevice)
     device.delete()
 
     return redirect('devices')
@@ -1004,7 +1004,90 @@ def delete_device(request, idDevice):
 #   Authorizations   #
 #--------------------#
 def getAllAuthorizations(request):
+
+    device = models.TbDevice.objects.all()
+    people = models.TbPeople.objects.all()
+
     return render(request, 'layouts/authorization/authorizations.html',{})
+
+
+def getAllAplications(request):
+    aplications = models.TbAplication.objects.all()
+    context = { 'aplications':aplications }
+    return render(request , 'layouts/aplication/aplications.html', context)
+def addAplication(request):
+
+    if request.method == 'POST':
+        nameAplication = request.POST['nameAplication'].capitalize()
+        nameCheck      = models.TbAplication.objects.filter(nameAplication = nameAplication)
+
+        if nameCheck:
+            messages.warning( request, 'aplicacion ya existe')
+            return redirect( 'aplications')
+        else:
+            aplication = models.TbAplication(nameAplication = nameAplication)
+            aplication.save()
+            messages.success( request, 'aplicacion agregada')
+            return redirect( 'aplications')
+
+def getAplication(request, id_Aplication):
+    try:
+        aplication = models.TbAplication.objects.get(id_Aplication =id_Aplication)
+        submodules = models.TbSubModule.objects.filter(id_Aplication = id_Aplication)
+
+        context = { "aplication": aplication, "submodules": submodules}
+        return  render(request, 'layouts/aplication/aplication_info.html', context)
+    except Exception as e:
+        print(e)
+        messages.error( request, 'ha ocurrido un error')
+        return redirect( 'aplications')
+    pass
+def addSubmodule(request, id_Aplication):
+    if request.method == 'POST':
+        nameSubModule         = request.POST['nameSubModule']
+        descriptionSubModule  = request.POST['descriptionSubModule']
+
+        subModuleCheck = models.TbSubModule.objects.filter(nameSubModule = nameSubModule)
+        try:
+            if subModuleCheck:
+                messages.warning(request, "El Sub-Modulo ya existe" )
+                return redirect( 'aplication', id_Aplication)
+            else:
+                aplication = models.TbAplication.objects.get(id_Aplication = id_Aplication)
+                subModule  = models.TbSubModule(nameSubModule = nameSubModule, descriptionSubModule = descriptionSubModule, id_Aplication = aplication)
+                subModule.save()
+                messages.success(request, "El Sub-Modulo agregado" )
+                return redirect( 'aplication', id_Aplication)
+        except Exception as e:
+            print(e)
+            messages.warning(request, "Ha Ocurrido un Error")
+            return redirect( 'aplication', id_Aplication)
+
+def updateSubModule(request, id_SubModule):
+    if request.method == 'POST':
+        nameSubModule = request.POST['nameSubModule']
+        descriptionSubModule  = request.POST['descriptionSubModule']
+
+        subModuleCheck = models.TbSubModule.objects.filter(nameSubModule = nameSubModule)
+        subModule      = models.TbSubModule.objects.get(id_SubModule = id_SubModule)
+        try:
+            if subModuleCheck:
+                messages.warning(request, "El Sub-Modulo ya existe" )
+                return redirect( 'aplication', subModule.id_Aplication)
+            elif subModule.nameSubModule == nameSubModule and subModule.descriptionSubModule == descriptionSubModule:
+                messages.warning(request, "Ingrese Nuevos datos" )
+                return redirect( 'aplication', subModule.id_Aplication)
+            else:
+                aplication = models.TbAplication.objects.get(id_Aplication = subModule.id_Aplication)
+                subModule.nameSubModule        = nameSubModule
+                subModule.descriptionSubModule = descriptionSubModule
+                subModule.save()
+                messages.success(request, "El Sub-Modulo Actualizado" )
+                return redirect( 'aplication', subModule.id_Aplication)
+        except Exception as e:
+            print(e)
+            messages.warning(request, "Ha Ocurrido un Error")
+            return redirect( 'aplication', subModule.id_Aplication)
 
 #------------------------------------------------------------------------------
 # Muestra los permisos relacionados a la persona seleccionada persona

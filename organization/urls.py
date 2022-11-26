@@ -92,4 +92,14 @@ urlpatterns = [
     #  Autporizathions  #
     #####################
     path('authorizations/', views.getAllAuthorizations, name = "authorizations"),
+
+
+    #####################
+    #    Aplications    #
+    #####################
+    path('aplications/', views.getAllAplications, name = "aplications"),
+    path('aplication/<int:id_Aplication>', views.getAplication, name = "aplication"),
+    path('addAplication/', views.addAplication, name = "addAplication"),
+    path('addSubmodule/<int:id_Aplication>', views.addSubmodule, name = "addSubmodule"),
+    path('updateSubModule/<int:id_SubModule>', views.updateSubModule, name = "updateSubModule"),
 ]

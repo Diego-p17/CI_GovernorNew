@@ -79,8 +79,8 @@ DATABASES = {
     'default':{
         'ENGINE':'mssql',
         'NAME':'CI_Governor',
-        #'HOST':'LAPTOP-7FTL6JB8\SQLEXPRESS',
-        'HOST':'NEO_DESKTOP',
+        'HOST':'LAPTOP-7FTL6JB8\SQLEXPRESS',
+        #'HOST':'NEO_DESKTOP',
         'PORT':'',
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
@@ -127,7 +127,6 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    '/var/www/static/',
 ]
 
 

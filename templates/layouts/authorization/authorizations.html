@@ -9,9 +9,9 @@
                 <tr>
                 <th>#</th>
                 <th>Nombre</th>
-                <th>Tax ID</th>
-                <th>Pais</th>
-                <th>Ciudad</th>
+                <th>Autorizacion ID</th>
+                <th>Typo</th>
+                <th></th>
                 <th>Dirección</th>
                 <th>Opciones</th>
                 </tr>
@@ -46,7 +46,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Agregar Organizacion</h5>
+                    <h5 class="modal-title">Crear Autorizacion</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -54,7 +54,7 @@
                         <form action="{% url 'addOrganization' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-outline mb-4">
-                                <input type="text" name = "nameOrg" class="form-control" placeholder=" Nombre Organizacion" required>
+                                <input type="text" name = "nameOrg" class="form-control" placeholder="" required>
                             </div>
                             <div class="form-outline mb-4">
                                 <input type="emailOrg" name = "emailOrg" class="form-control" placeholder="Correo" required>
