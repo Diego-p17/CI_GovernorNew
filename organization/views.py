@@ -1056,7 +1056,7 @@ def addSubmodule(request, id_Aplication):
                 aplication = models.TbAplication.objects.get(id_Aplication = id_Aplication)
                 subModule  = models.TbSubModule(nameSubModule = nameSubModule, descriptionSubModule = descriptionSubModule, id_Aplication = aplication)
                 subModule.save()
-                messages.success(request, "El Sub-Modulo agregado" )
+                messages.success(request, "El Sub-Modulo fue agregado" )
                 return redirect( 'aplication', id_Aplication)
         except Exception as e:
             print(e)
@@ -1088,6 +1088,24 @@ def updateSubModule(request, id_SubModule):
             print(e)
             messages.warning(request, "Ha Ocurrido un Error")
             return redirect( 'aplication', subModule.id_Aplication)
+
+def deleteSubModule(request, id_SubModule):
+    try:
+        subModule = models.TbSubModule.objects.get(id_SubModule = id_SubModule)
+        id_Aplication = subModule.id_Aplication.id_Aplication
+
+        if subModule:
+            subModule.delete()
+            messages.success(request, "El Sub-Modulo ha sido eliminado")
+            return redirect( 'aplication', id_Aplication)
+
+        else:
+            messages.warning(request, "El Sub-Modulo no encontrado")
+            return redirect( 'aplication', id_Aplication)
+    except Exception as e:
+        print(e)
+        messages.warning(request, "Ha Ocurrido un error")
+        return redirect( 'aplications')
 
 #------------------------------------------------------------------------------
 # Muestra los permisos relacionados a la persona seleccionada persona

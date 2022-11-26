@@ -102,4 +102,5 @@ urlpatterns = [
     path('addAplication/', views.addAplication, name = "addAplication"),
     path('addSubmodule/<int:id_Aplication>', views.addSubmodule, name = "addSubmodule"),
     path('updateSubModule/<int:id_SubModule>', views.updateSubModule, name = "updateSubModule"),
+    path('deleteSubModule/<int:id_SubModule>', views.deleteSubModule, name = "deleteSubModule"),
 ]

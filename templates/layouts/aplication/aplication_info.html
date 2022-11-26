@@ -7,7 +7,6 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Información</button>
         <button class="nav-link" id="nav-subModules-tab" data-bs-toggle="tab" data-bs-target="#nav-subModules" type="button" role="tab" aria-controls="nav-subModules" aria-selected="false">SubModulos</button>
-        <button class="nav-link" id="nav-devices-tab" data-bs-toggle="tab" data-bs-target="#nav-devices" type="button" role="tab" aria-controls="nav-devices" aria-selected="false">Equipos</button>
       </div>
     </nav>
     <!-- TABS CONTENT  -->
@@ -34,8 +33,7 @@
           </div>
         </div>
       </div>
-
-      <!-- TAB Permisos -->
+      <!-- TAB SubModules -->
       <div class="tab-pane fade show" id="nav-subModules" role="tabpanel" aria-labelledby="nav-subModules-tab">
         <div class="container_sm shadow p-5 mb-5 bg-body rounded">
           <div class="row">
@@ -59,7 +57,6 @@
                     <td> {{ submodule.nameSubModule        }} </td>
                     <td> {{ submodule.descriptionSubModule }} </td>
                     <td>
-                        <a href=""><button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="informacion"><i class="bi bi-info-circle"></i></button></a>
                         <div class="d-inline">
                             <!-- Button modal add_device  -->
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update{{submodule.id_SubModule }}"><i class="bi bi-arrow-repeat"></i></button>
@@ -97,8 +94,8 @@
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        <a href=""><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
+                        </div>
+                        <a href="{% url 'deleteSubModule' submodule.id_SubModule %}"><button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="eliminar"><i class="bi bi-x-circle"></i></button></a>
                     </td>
                   </tr>
                 {% endfor %}
@@ -138,7 +135,5 @@
           </div>
         </div>
     </div>
-
-
 
 {% endblock %}
